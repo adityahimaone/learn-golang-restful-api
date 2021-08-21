@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/julienschmidt/httprouter"
 	"learn-restful-api/app"
 	"learn-restful-api/controller"
+	"learn-restful-api/exception"
 	"learn-restful-api/helper"
 	"learn-restful-api/repository"
 	"learn-restful-api/service"
@@ -27,10 +29,13 @@ func main() {
 	router.PUT("/api/categories/:categoryId", categoryController.Update)
 	router.DELETE("/api/categories/:categoryId", categoryController.Delete)
 
+	router.PanicHandler = exception.ErrorHandler
+
 	server := http.Server{
 		Addr:    "localhost:8080",
 		Handler: router,
 	}
+	fmt.Println("Server Starting . . .")
 	err := server.ListenAndServe()
 	helper.PanicIfError(err)
 }
